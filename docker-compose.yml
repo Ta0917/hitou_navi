@@ -1,16 +1,31 @@
 services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "33306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: onsen
+      MYSQL_USER: onsen_user
+      MYSQL_PASSWORD: onsen_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
   backend:
     build: ./backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./data:/app/data
     env_file:
       - .env
-    
+    depends_on:
+      - db
+
   frontend:
     build: ./frontend
     ports:
       - "80:80"
     depends_on:
       - backend
+
+volumes:
+  mysql_data:
