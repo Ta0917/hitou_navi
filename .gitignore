@@ -48,3 +48,9 @@ desktop.ini
 # Logs
 logs/
 *.log
+
+# Memo files
+memo/*
+
+#claude
+CLAUDE.md
