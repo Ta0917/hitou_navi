@@ -5,13 +5,13 @@ services:
       - "33306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: onsen
-      MYSQL_USER: onsen_user
-      MYSQL_PASSWORD: onsen_password
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "onsen_user", "-ponsen_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app_user", "-papp_password"]
       interval: 5s
       timeout: 5s
       retries: 10
