@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@theme {
+      /* 地色・背景 */
+  --color-ground:       #101318;
+  --color-ground-deep:  #0E1014;
+  --color-ground-ash:   #14161B;
+  --color-ground-night: #0F1116;
+
+  /* 生成り・砂金 */
+  --color-cream-sand:   #E3D6B4;
+  --color-cream-raw:    #F1E7CF;
+  --color-cream-ivory:  #F6EFE1;
+  --color-cream-moon:   #F4ECD6;
+  --color-cream-knead:  #E9DFC7;
+  --color-cream-grass:  #DCCDA3;
+  --color-cream-flax:   #DDD0B2;
+  --color-cream-shira:  #D8CAA6;
+  --color-cream-haichu: #D4C8AB;
+
+  /* 燻し・くすみ */
+  --color-muted-rikyu:   #C8BCA2;
+  --color-muted-tori:    #CDBFA0;
+  --color-muted-aku:     #B9AD92;
+  --color-muted-kuchiba: #A99E84;
+  --color-muted-nezu:    #9B917A;
+  --color-muted-miru:    #7E765F;
+
+  /* 差し色 */
+  --color-accent-shu: #A8412F;
+  --color-accent-kin: #A98A3E;
+  --color-accent-ai:  #33506B;
+}
+
+.nav-link {
+  position: relative;
+  color: #DDD0B2;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  padding-bottom: 7px;
+  transition:
+    color 0.3s ease,
+    transform 0.38s cubic-bezier(.34,1.4,.5,1),
+    letter-spacing 0.38s ease; 
+}
+
+.nav-link:hover {
+  color: #F1E7CF;
+  transform: translateY(-2px);
+  letter-spacing: 0.20em;
+}
+
+.nav-link::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 1px;
+  width: 100%;
+  height: 1px;
+  background: #ECDFBD;
+  transform-origin: left center;
+  will-change: transform;
+  transform: scaleX(0);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
