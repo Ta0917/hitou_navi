@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import heroImg from '../assets/hero.jpg'
 import logoImg from '../assets/logo.svg'
-import axios from 'axios'
+
 
 const navItems = [
   { label: '秘湯を探す', href: '#' },
@@ -11,15 +11,10 @@ const navItems = [
 ]
 
 export default function TopPage() {
-  const [count, setCount] = useState<number | null>(null)
-  const [error, setError] = useState(false)
+  const [tripType, setTripType] = useState<'dayTrip' | 'stay' | null>('stay')
+  const [core, setCore] = useState('')
 
-  useEffect(() => {
-    axios
-      .get('/api/onsens')
-      .then((res) => setCount(res.data.length))
-      .catch(() => setError(true))
-  }, [])
+  const accent = tripType === 'stay' ? '#a8412f' : '#6F7E4F'
 
   return (
     <div className="relative w-full h-screen">
@@ -30,7 +25,7 @@ export default function TopPage() {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(to bottom, rgba(20,23,29,0.65) 0%, rgba(20,23,29,0.20) 28%,rgba(20,23,29,0.55) 70%, rgba(20,23,29,0.96) 100%), radial-gradient(60% 50% at 50% 60%, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.60) 100%)'
+          background: 'linear-gradient(to bottom, rgba(20,23,29,0.65) 0%, rgba(20,23,29,0.20) 28%,rgba(20,23,29,0.55) 70%, rgba(20,23,29,0.96) 100%), radial-gradient(60% 50% at 50% 60%, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.55) 100%)'
         }}
       >
       </div>
@@ -61,11 +56,8 @@ export default function TopPage() {
                 key={item.label}
                 className="nav-link"
                 style={{
-                  fontSize: '0.95rem',
+                  fontSize: '0.9rem',
                   fontFamily: "'Shippori Mincho', serif",
-                  color: '#ddd0b2',
-                  letterSpacing: '0.1em',
-                  textShadow: '2px 2px 8px rgba(0,0,0,0.5)'
                 }}>
                 {item.label}
               </a>
@@ -78,37 +70,134 @@ export default function TopPage() {
       <div
         className="absolute z-20"
         style={{
-          top: '50%',
-          right: '12%',
+          top: '39%',
+          right: '11%',
           transform: 'translateY(-50%)',
           display: 'flex',
           flexDirection: 'row-reverse',
           gap: '0.6rem'
         }}
       >
-        {(['こころ', '解ける', '湯の宿'] as const).map((col, i) => {
-          const spacing = i === 2 ? '0.3em' : '0'
-          return (
-          <span
-            key={i}
+        {(['秘湯を', 'たずねて', 'まだ見ぬ、ひとつの湯へ。'] as const).map((text) => {
+
+          return((text === 'まだ見ぬ、ひとつの湯へ。'
+            ? <span
+            key={text}
             style={{
               writingMode: 'vertical-rl',
-              fontFamily: '"Yuji Mai", serif',
-              fontSize: '6.0rem',
-              color: '#d8cdb0',
-              textShadow: '0 2px 12px rgba(0,0,0,0.6)'
-            }}
-          >
-            {col.split('').map((char, ci, arr) => (
-              <span key={ci} style={{ letterSpacing: ci < arr.length - 1 ? '0.5em' : spacing }}>
-                {char}
-              </span>
-            ))}
-            {i === 2 && (
-                <span style={{ fontSize: '0.55em', opacity: 0.45 }}>。</span>
-            )}
-          </span>
-        )})}
+              fontFamily: "'Shippori Mincho', serif",
+              fontSize: '1.1rem',
+              letterSpacing: '0.35em',
+              marginTop: '20px',
+              color: '#c8bca2',
+              textShadow: '2px 2px 8px rgba(0,0,0,0.5)'
+            }}>{text}</span>
+            : <span
+            key={text}
+            style={{
+              writingMode: 'vertical-rl',
+              fontFamily: "'Yuji Mai', serif",
+              fontSize: '3.75rem',
+              letterSpacing: '0.18em',
+              color: '#dccda3',
+              textShadow: '2px 2px 8px rgba(0,0,0,0.5)'
+            }}>{text}</span>)
+          )
+        })}
+      </div>
+
+      {/* 検索UIエリア */}
+      <div
+        className="absolute z-20"
+        style={{
+          bottom: '8%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '770px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '15px',
+          fontFamily: "'Shippori Mincho', serif",
+        }}>
+        {/* トグル */}
+        <div style={{
+          display: 'inline-flex',
+          border: '1px solid rgba(214,199,158,0.2)',
+          overflow: 'hidden'
+          }}>
+          {(['daytrip', 'stay']).map((type) => {
+            const isSelected = tripType === type
+            return(
+              <button
+                key={type}
+                onClick={() => setTripType(type as 'dayTrip' | 'stay')}
+                style={{
+                  padding: '7px 28px',
+                  border: 'none',
+                  backgroundColor: isSelected ? accent : 'rgba(15,17,22,0.35)',
+                  color: isSelected ? '#f6efe1' : '#7a7264',
+                  fontFamily: "'Shippori Mincho', serif",
+                  fontSize: '12.5px',
+                  letterSpacing: '0.22em',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.55s ease, color 0.3s ease',
+                }}
+              >
+                {type === 'daytrip' ? '日帰り' : '宿泊'}
+              </button>
+            )
+          })}
+        </div>
+        {/* チップバー */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            backgroundColor: 'rgba(15,17,22,0.52)',
+            backdropFilter: 'blur(9px)',
+            WebkitBackdropFilter: 'blur(9px)',
+            border: '1px solid rgba(214,199,158,0.18)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
+            overflow: 'hidden',
+          } as React.CSSProperties}
+        >
+          {/* 入力フィールド＋選択済みチップ表示エリア */}
+          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+
+            {/* 入力フィールド */}
+            <div style={{
+              display: 'flex', paddingLeft: '16px',
+              alignItems: 'stretch', minHeight:'50px',
+            }}>
+              <input
+                type="text"
+                value={core}
+                onChange={(e) => {setCore(e.target.value)}}
+                maxLength={26}
+                placeholder="静か 近場 日帰り"
+                style={{
+                  flex: 1, minWidth: 0, alignSelf: 'center',
+                  border: 'none', outline: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#e9dfc7', fontSize: '16px',
+                  fontFamily: "'Shippori Mincho', serif",
+                  letterSpacing: '0.04em',
+                  padding: '13px 0',
+                }}
+              />
+            </div>
+            {/* PC用オーバーレイ3種 */}
+            <div>
+
+            </div>
+            {/* 選択済みチップ表示エリア */}
+            <div>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

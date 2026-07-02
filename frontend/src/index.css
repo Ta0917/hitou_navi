@@ -27,7 +27,7 @@
   --color-muted-miru:    #7E765F;
 
   /* 差し色 */
-  --color-accent-shu: #A8412F;
+  --color-accent-shu: ##E94709;
   --color-accent-kin: #A98A3E;
   --color-accent-ai:  #33506B;
 }
@@ -35,19 +35,21 @@
 .nav-link {
   position: relative;
   color: #DDD0B2;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-decoration: none;
   padding-bottom: 7px;
   transition:
     color 0.3s ease,
-    transform 0.38s cubic-bezier(.34,1.4,.5,1),
-    letter-spacing 0.38s ease; 
+    transform 0.38s cubic-bezier(.34, 1.4, .5, 1),
+    letter-spacing 0.38s ease,
+    text-shadow 0.38s ease;
 }
 
 .nav-link:hover {
-  color: #F1E7CF;
-  transform: translateY(-2px);
+  color: #f6edd6;
+  transform: translateY(-3px);
   letter-spacing: 0.20em;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
 .nav-link::after {
@@ -62,7 +64,7 @@
   transform-origin: left center;
   will-change: transform;
   transform: scaleX(0);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(.22, .61, .36, 1);
 }
 
 .nav-link:hover::after {
