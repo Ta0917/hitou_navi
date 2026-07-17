@@ -62,6 +62,8 @@ class OnsenAccessResponse(BaseModel):
     google_maps_link_url: Optional[str] = None
     latitude: Optional[Decimal] = None
     longitude: Optional[Decimal] = None
+    nearest_ic_minutes: Optional[int] = None
+    nearest_station_walk_minutes: Optional[int] = None
 
     model_config = {"from_attributes": True}
 
@@ -125,8 +127,9 @@ class OnsenTagResponse(BaseModel):
     onsen_id: int
     tag_id: int
     confidence: Decimal
-    approved_by: Optional[str] = None
-    approved_at: Optional[datetime] = None
+    status: Literal["proposed", "approved", "rejected"]
+    created_at: datetime
+    updated_at: datetime
     tag: TagResponse
 
     model_config = {"from_attributes": True}
@@ -138,6 +141,7 @@ class OnsenSummaryResponse(BaseModel):
     name: str
     region: str
     prefecture: str
+    area: str
     quietness_score: int
     solitude_score: int
     accessibility_score: int
@@ -145,6 +149,8 @@ class OnsenSummaryResponse(BaseModel):
     day_trip_available: bool
     accommodation_available: bool
     admission_fee_min: Optional[int] = None
+    lodging_fee_min: Optional[int] = None
+    tags: List[str] = []
 
     model_config = {"from_attributes": True}
 
@@ -155,12 +161,14 @@ class OnsenDetailResponse(BaseModel):
     name: str
     region: str
     prefecture: str
+    area: str
     address: Optional[str] = None
     phone: Optional[str] = None
     business_hours: Optional[str] = None
     closed_days: Optional[str] = None
     admission_fee: Optional[str] = None
     admission_fee_min: Optional[int] = None
+    lodging_fee_min: Optional[int] = None
     day_trip_available: bool
     accommodation_available: bool
     parking_available: Optional[bool] = None

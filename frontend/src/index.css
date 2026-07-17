@@ -52,6 +52,7 @@
   text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
+/* ナビゲーションリンクのホバー時のアンダーラインアニメーションを実現するために、`.nav-link` クラスに対して `::after` 擬似要素を使用しています。ホバー時には `transform: scaleX(1)` により、アンダーラインが左から右へと伸びるように見えます。 */
 .nav-link::after {
   content: "";
   display: block;
@@ -69,4 +70,150 @@
 
 .nav-link:hover::after {
   transform: scaleX(1);
+}
+
+/* 探すボタン */
+.search-btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+/* ─── スクロールキュー アニメーション ─── */
+@keyframes scrollPulse {
+  0%   { transform: scaleY(0); transform-origin: top;    opacity: 0.2; }
+  45%  { transform: scaleY(1); transform-origin: top;    opacity: 1;   }
+  55%  { transform: scaleY(1); transform-origin: bottom; opacity: 1;   }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0.2; }
+}
+
+.scroll-pulse-line {
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+
+/* ─── アクティブチップ (選択済み通常チップ) ─── */
+.active-chip:hover {
+  filter: brightness(1.1);
+}
+
+/* ─── サジェストチップ ─── */
+.suggest-chip:hover {
+  border-color: rgba(227, 214, 180, 0.45) !important;
+  background: rgba(214, 199, 158, 0.1) !important;
+  color: #f1e7cf !important;
+}
+
+/* ─── オーバーレイスクロール: スクロールバー非表示 ─── */
+.overlay-scroll {
+  scrollbar-width: none;
+}
+.overlay-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── オーバーレイ条件チップ（未選択） ─── */
+.overlay-chip:hover {
+  border-color: rgba(227, 214, 180, 0.45) !important;
+  background: rgba(214, 199, 158, 0.12) !important;
+  color: #f1e7cf !important;
+}
+
+/* ─── 人数 +/- ボタン ─── */
+.guests-btn:hover {
+  background: rgba(214, 199, 158, 0.1) !important;
+  border-color: rgba(214, 199, 158, 0.45) !important;
+  color: #f1e7cf !important;
+}
+
+/* ─── すべて表示トグル ─── */
+.show-all-btn:hover {
+  color: #e0d3b4 !important;
+  border-color: rgba(214, 199, 158, 0.38) !important;
+}
+
+/* ─── 詳細条件ボタン ─── */
+.detail-open-btn {
+  text-decoration: none;
+}
+.detail-open-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(155, 145, 122, 0.6);
+}
+
+/* ─── サジェストスクロール コンテナ: スクロールバー非表示 ─── */
+.suggest-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── 検索結果カード ─── */
+.result-card:hover {
+  border-color: rgba(227, 214, 180, 0.5) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* ─── 検索結果カード: サムネイル斜め罫テクスチャ（画像未設定時の地） ─── */
+.cand-thumb-texture {
+  background:
+    repeating-linear-gradient(135deg, rgba(216, 205, 176, 0.05) 0 2px, transparent 2px 14px),
+    linear-gradient(135deg, #1b1e25, #14171d);
+}
+
+/* ─── 検索結果カード: 出現アニメーション（先頭3枚は順に遅延） ─── */
+@keyframes candCardIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cand-card-anim {
+  animation: candCardIn 0.8s cubic-bezier(.2, .8, .2, 1) both;
+}
+.cand-card-anim:nth-child(1) { animation-delay: 0.10s; }
+.cand-card-anim:nth-child(2) { animation-delay: 0.22s; }
+.cand-card-anim:nth-child(3) { animation-delay: 0.34s; }
+
+/* ─── Detailsセクション: ステージ画像のクロスフェード（見本 .stage-img 相当） ─── */
+.stage-img-yushuku {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1.6s ease;
+}
+.stage-img-yushuku.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── Detailsセクション: 比較CTAボタンの左→右ワイプ塗りつぶし（見本 .compare-btn 相当） ─── */
+.compare-btn-yushuku {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s ease;
+}
+.compare-btn-yushuku::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: -100%;
+  background: var(--compare-accent);
+  transition: left 0.4s cubic-bezier(.2, .8, .2, 1);
+  z-index: 0;
+}
+.compare-btn-yushuku > * {
+  position: relative;
+  z-index: 1;
+}
+.compare-btn-yushuku:hover {
+  color: #101318;
+}
+.compare-btn-yushuku:hover::before {
+  left: 0;
+}
+
+/* ─── 選択済みチップ縦スクロール（モバイル: 3行超過時）: スクロールバー非表示 ─── */
+.chips-scroll {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE / 旧Edge */
+}
+.chips-scroll::-webkit-scrollbar {
+  display: none;              /* Chrome / Safari */
 }

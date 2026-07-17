@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "design-sample",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\wakta\\OneDrive\\ドキュメント\\projects\\ページデザインの洗練について\\design_handoff_hisou_search", "run", "dev", "--", "--port", "5174"],
+      "port": 5174
+    }
+  ]
+}

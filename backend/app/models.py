@@ -1,8 +1,8 @@
 from sqlalchemy import (
     Column, Integer, String, Text, Boolean, Date, DateTime,
-    Numeric, Enum, JSON, UniqueConstraint, ForeignKey,
+    Numeric, Enum, JSON, LargeBinary, UniqueConstraint, ForeignKey,
 )
-from sqlalchemy.dialects.mysql import TINYINT
+from sqlalchemy.dialects.mysql import TINYINT, SMALLINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -17,13 +17,15 @@ class Onsen(Base):
     name = Column(String(255), nullable=False)
     region = Column(String(255), nullable=False)
     prefecture = Column(String(100), nullable=False)
+    area = Column(String(50), nullable=False)
     address = Column(String(500))
 
     phone = Column(String(50))
     business_hours = Column(String(500))
     closed_days = Column(String(255))
     admission_fee = Column(String(255))
-    admission_fee_min = Column(Integer)
+    admission_fee_min = Column(Integer)   # 日帰り入浴料の最小額（円）。日帰り不可施設は NULL。
+    lodging_fee_min = Column(Integer)     # 1人あたり宿泊料の最小額（円）。宿泊不可施設は NULL。
     day_trip_available = Column(Boolean, nullable=False, default=True)
     accommodation_available = Column(Boolean, nullable=False, default=False)
     parking_available = Column(Boolean)
@@ -56,6 +58,17 @@ class Onsen(Base):
     photos = relationship("OnsenPhoto", back_populates="onsen")
     booking_links = relationship("OnsenBookingLinks", back_populates="onsen", uselist=False)
     onsen_tags = relationship("OnsenTag", back_populates="onsen")
+    embeddings = relationship("OnsenEmbedding", back_populates="onsen")
+
+    @property
+    def tags(self) -> list[str]:
+        """承認済みタグを信頼度順で最大3件返す（検索結果カード表示用）。"""
+        approved = sorted(
+            (ot for ot in self.onsen_tags if ot.status == "approved"),
+            key=lambda ot: ot.confidence,
+            reverse=True,
+        )
+        return [ot.tag.label for ot in approved[:3]]
 
 
 class OnsenSpringInfo(Base):
@@ -130,6 +143,12 @@ class OnsenAccess(Base):
     latitude = Column(Numeric(10, 8))
     longitude = Column(Numeric(11, 8))
 
+    # 「最寄ICから○分以内」「最寄駅から徒歩○分以内」の詳細条件チップ用。
+    # 車での移動が現実的でない施設（登山道でしか辿り着けない等）はnearest_ic_minutesもNULL、
+    # 徒歩圏に駅が無い施設はnearest_station_walk_minutesがNULL（seed.pyのgen_access_minutes参照）。
+    nearest_ic_minutes = Column(Integer)           # 最寄ICまでの車での所要時間（分）
+    nearest_station_walk_minutes = Column(Integer)  # 最寄駅までの徒歩所要時間（分）
+
     onsen = relationship("Onsen", back_populates="access")
 
 
@@ -196,6 +215,7 @@ class Tag(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     onsen_tags = relationship("OnsenTag", back_populates="tag")
+    embedding = relationship("TagEmbedding", back_populates="tag", uselist=False)
 
 
 class OnsenTag(Base):
@@ -209,8 +229,42 @@ class OnsenTag(Base):
     onsen_id = Column(Integer, ForeignKey("onsens.id"), nullable=False)
     tag_id = Column(Integer, ForeignKey("tags.id"), nullable=False)
     confidence = Column(Numeric(3, 2), nullable=False)
-    approved_by = Column(String(100))
-    approved_at = Column(DateTime)
+    status = Column(Enum("proposed", "approved", "rejected", name="tag_status_enum"), nullable=False, default="proposed")
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
     onsen = relationship("Onsen", back_populates="onsen_tags")
     tag = relationship("Tag", back_populates="onsen_tags")
+
+
+class TagEmbedding(Base):
+    __tablename__ = "tag_embeddings"
+
+    tag_id = Column(Integer, ForeignKey("tags.id"), primary_key=True)
+    model_version = Column(String(128), primary_key=True)
+    vector = Column(LargeBinary, nullable=False)
+    dim = Column(SMALLINT(unsigned=True), nullable=False)
+    content_hash = Column(String(64), nullable=False)
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+
+    tag = relationship("Tag", back_populates="embedding")
+
+
+class OnsenEmbedding(Base):
+    __tablename__ = "onsen_embeddings"
+
+    __table_args__ = (
+        UniqueConstraint("onsen_id", "chunk_index", "model_version", name="uq_onsen_chunk"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    onsen_id = Column(Integer, ForeignKey("onsens.id"), nullable=False)
+    chunk_index = Column(SMALLINT(unsigned=True), nullable=False)
+    chunk_text = Column(Text, nullable=False)
+    vector = Column(LargeBinary, nullable=False)
+    dim = Column(SMALLINT(unsigned=True), nullable=False)
+    model_version = Column(String(128), nullable=False)
+    content_hash = Column(String(64), nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+
+    onsen = relationship("Onsen", back_populates="embeddings")
