@@ -4,7 +4,6 @@ import hashlib
 import re
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 MODEL_VERSION = "cl-nagoya/ruri-v3-310m"
 
@@ -19,6 +18,8 @@ class Embedder:
     """Ruri v3 の非対称接頭辞規則をここに吸収する。DBには接頭辞なしの原文のみ保存する。"""
 
     def __init__(self, model_version: str = MODEL_VERSION):
+        from sentence_transformers import SentenceTransformer
+
         self.model_version = model_version
         self._model = SentenceTransformer(model_version)
 

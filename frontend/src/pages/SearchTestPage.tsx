@@ -34,8 +34,6 @@ const PAGE_SIZE = 8
 
 export default function SearchTestPage() {
   const navigate = useNavigate()
-  const [authed, setAuthed] = useState(false)
-  const [password, setPassword] = useState('')
 
   const [core, setCore] = useState('')
   const [tagIds, setTagIds] = useState('')
@@ -77,32 +75,6 @@ export default function SearchTestPage() {
 
   const totalPages = results ? Math.max(1, Math.ceil(results.length / PAGE_SIZE)) : 1
   const pageResults = results ? results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : []
-
-  if (!authed) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded shadow w-80">
-          <h2 className="text-xl font-bold mb-4">管理者認証</h2>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && password === '9767') setAuthed(true)
-            }}
-            placeholder="パスワード"
-            className="w-full border rounded px-3 py-2 mb-3 text-sm"
-          />
-          <button
-            onClick={() => { if (password === '9767') setAuthed(true) }}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm"
-          >
-            ログイン
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="p-6 max-w-screen-lg mx-auto">
@@ -225,7 +197,7 @@ export default function SearchTestPage() {
               <div
                 key={o.slug}
                 onClick={() =>
-                  navigate(`/admin/search-test/${o.slug}`, {
+                  navigate(`/onsens/${o.slug}`, {
                     state: {
                       topThree: pageResults.map((r) => ({
                         slug: r.slug,
