@@ -1,12 +1,9 @@
 # Handoff
 
-## 2026-10-06 JST — 公開品質整備（Codex）
+## 現在の構成（2026-10-06）
 
-GitHub公開HEADを独立cloneして整備済み。既存OneDrive作業ツリーには未コミット変更があり、そちらは変更していない。過去の状態記述より、この追記とルートREADMEを優先する。
-管理UIと固定パスワードを撤去。管理APIは既定で不登録、開発時の明示有効化にBearer認証を必須化。nginxも管理APIを遮断。検索確認ページは開発限定の /search-test。
-README、.env.example、CI、管理API／検索の軽量テストを追加。pnpmではなく frontendはnpm。9テスト、frontendビルド、変更対象lint、Python構文、Compose設定確認は通過。全体lintはTopPageの既存41エラー・3警告。DB／モデル／E2Eの統合動作は今回未検証。
-次: 成果物パッチを既存変更と突き合わせて反映・本人レビュー。2026-10-06の本人指示により、検証済み変更をGitHubへ通常pushする。生成物削除・履歴改変は行わない。
-
+管理APIは既定で無効。開発時にENABLE_ADMIN_API=trueと32文字以上のADMIN_API_TOKENを設定した場合だけ登録し、Bearer認証を必須とする。nginxは管理APIを遮断する。管理UIは撤去済み。検索確認ページはVite開発モード限定の /search-test。
+管理APIと検索ロジックの単体テストは9件。フロントビルドと対象lint、Python構文検査はCIで実行する。全体lintはTopPageに未解消のエラーが残る。実モデル・DB統合・E2Eは未整備。
 
 Use this as the first message/context for the next Claude Code or Codex session.
 

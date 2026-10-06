@@ -1433,17 +1433,11 @@ git diff --stat --cached（ステージ済み）:
 (差分なし)
 ```
 
-## 2026-10-06 JST — Codex 作業開始
-GitHub公開版の独立cloneで応募向け整備。既存OneDrive作業ツリーの未コミット変更には触れない。README・管理API保護・環境変数・検証を対象とする。
+## 2026-10-06 — 管理API保護・ドキュメント・CI
 
-## 2026-10-06 JST — Codex 公開品質整備完了
-
-- 日本語README、画面画像、frontend説明、.env.example、GitHub Actionsを追加。
-- 管理ハンドラをadmin_routesへ分離、admin_securityで既定不登録とBearer認証を実装。管理UI撤去、search-testは開発限定。ComposeポートとViteをloopbackへ限定、nginx管理API遮断。
-- Embedderのライブラリimportを初期化時へ移し、モデルなしの単体検証を可能にした（実モデルは変更していない）。
-- Python 3.12: unittest 9件成功、compileall成功。npm run build成功、変更対象eslint成功。npm run lintは既存TopPageの41エラー・3警告。docker compose config --quiet成功。
-- seed定義を副作用なしで集計: 100施設・87通常タグ＋2操作タグ・500チャンク。DB実件数／実モデル推論は未確認。UI画像はバックエンド未接続の実トップ画面。
-- 新しい作業cloneのみ修正。既存OneDriveの未コミット変更は保全。GitHubへのpush、デプロイなし。
-
-## 2026-10-06 JST — GitHub反映
-本人から変更反映の指示を受けた。両リポジトリのorigin/masterと基準HEADが一致することをfetchで確認。独立cloneの検証済み変更をコミットし通常pushする。既存OneDrive作業ツリーには触れない。
+- 管理ハンドラをadmin_routesへ分離。admin_securityで既定不登録、Bearer認証、トークン長検証を実装。
+- 管理UIと固定パスワード判定を撤去。検索確認ページは開発モード限定。ComposeとViteをloopbackへ限定し、nginxで管理APIを遮断。
+- README、環境変数例、画面画像、CI、管理認証と検索ロジックの単体テストを追加。Embedderのライブラリimportを初期化時へ移動し、モデルを取得せず単体テスト可能にした。
+- Python 3.12で9テストと構文検査成功。フロントビルドと対象lint成功。全体lintはTopPageの41エラー・3警告で失敗。Compose構成検査成功。GitHub Actionsのbackend/frontend成功。
+- seed定義は100施設・89タグ・500チャンク。デモデータの制約、migration未整備、実モデル・DB統合・E2Eの未検証範囲をREADMEに記載。
+- 公開READMEをプロジェクトの概要・設計・利用方法・制約・AI支援の説明に整理。

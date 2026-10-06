@@ -239,10 +239,9 @@ D-002のRationaleで既知の性質）が原因と判明した。ユーザーに
   「キーワードがタグlabelと完全一致する場合は埋め込みをバイパスする」ショートカット
   （`search.py`の`classify_keywords`）を先に実装し、モデル変更とは独立した保険として併用する。
 
-## D-011: 公開品質と開発管理の境界
+## D-011: 開発用管理APIの境界
 
-Date: 2026-10-06 JST
-Decided by: User + Codex
+Date: 2026-10-06
 Status: accepted
 
-公開用管理UIを撤去（ユーザー許可）。管理APIは既定で登録せず、開発時だけENABLE_ADMIN_API=trueと32文字以上のランダムBearer tokenで有効化する。nginxは管理APIをプロキシしない。モデルは維持し、軽量単体テストでは固定ベクトルを用いる。生成物の削除・履歴改変・外部公開は行わない。AI提案と本人判断を区別したREADMEを用意する。
+管理UIを撤去し、管理APIは既定で登録しない。開発時だけENABLE_ADMIN_API=trueと32文字以上のランダムBearer tokenで有効化する。nginxは管理APIをプロキシしない。軽量単体テストは固定ベクトルを用い、モデル推論とDB統合の検証は別途行う。
